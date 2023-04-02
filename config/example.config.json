@@ -1,0 +1,6 @@
+{
+    "name": "slapbattle",
+    "gameserver": {
+        "config": "config/example.gameserver.config.json"
+    }
+}

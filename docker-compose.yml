@@ -1,0 +1,42 @@
+services:
+  gameserver:
+    build:
+      context: .
+      target: dev
+      dockerfile: ./apps/gameserver/Dockerfile
+    environment:
+      CONFIG_PATH: /var/config.json
+    volumes:
+      - ./config/gameserver.config.json:/var/config.json
+      - ./apps/gameserver/src:/app/apps/gameserver/src
+    networks:
+      - internal
+
+  web:
+    build:
+      context: .
+      target: dev
+      dockerfile: ./apps/web/Dockerfile
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+      - ./apps/web/public:/app/apps/web/public
+      - ./apps/web/vite.config.ts:/app/apps/web/vite.config.ts
+      - ./apps/web/postcss.config.cjs:/app/apps/web/postcss.config.cjs
+      - ./apps/web/tailwind.config.cjs:/app/apps/web/tailwind.config.cjs
+    networks:
+      - internal
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.docker.conf:/etc/nginx/nginx.conf
+    ports:
+      - '80:80'
+    depends_on:
+      - gameserver
+      - web
+    networks:
+      - internal
+
+networks:
+  internal:

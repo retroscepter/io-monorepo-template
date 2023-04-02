@@ -1,0 +1,10 @@
+{
+    "listener": {
+        "port": 80,
+        "host": "0.0.0.0"
+    },
+    "ai": {
+        "count": 0,
+        "updateInterval": 100
+    }
+}

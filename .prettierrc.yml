@@ -1,0 +1,23 @@
+trailingComma: none
+arrowParens: avoid
+quoteProps: consistent
+bracketSpacing: true
+singleQuote: true
+useTabs: false
+semi: false
+tabWidth: 4
+printWidth: 80
+importOrder:
+  - '<THIRD_PARTY_MODULES>'
+  - '^[./]'
+importOrderSeparation: true
+importOrderSortSpecifiers: true
+importOrderParserPlugins:
+  - jsx
+  - typescript
+  - '["decorators-legacy", { "decoratorsBeforeExport": false }]'
+
+overrides:
+  - files: '*.{yml,yaml}'
+    options:
+      tabWidth: 2
