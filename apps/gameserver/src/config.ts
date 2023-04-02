@@ -13,7 +13,16 @@ export const configLoader = (): GameserverOpts => {
     return {
         listener: {
             port: parseInt(process.env.LISTENER_PORT || '8080'),
-            host: process.env.LISTENER_HOST || '0.0.0.0'
+            host: process.env.LISTENER_HOST || '0.0.0.0',
+            updateInterval: parseInt(
+                process.env.LISTENER_UPDATE_INTERVAL || '100'
+            ),
+            heartbeatIntervalMin: parseInt(
+                process.env.LISTENER_HEARTBEAT_INTERVAL_MIN || '1000'
+            ),
+            heartbeatIntervalMax: parseInt(
+                process.env.LISTENER_HEARTBEAT_INTERVAL_MAX || '3000'
+            )
         },
         ai: {
             count: parseInt(process.env.AI_COUNT || '10'),

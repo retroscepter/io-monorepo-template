@@ -16,6 +16,10 @@ export class Match {
         // Nothing here
     }
 
+    stop() {
+        this.removeAllPlayers()
+    }
+
     addPlayer(player: Player) {
         if (this.players.has(player.id)) {
             throw new Error('player is already at table')
@@ -38,5 +42,11 @@ export class Match {
         player.match = null
 
         this.players.delete(player.id)
+    }
+
+    removeAllPlayers() {
+        for (const [, player] of this.players) {
+            this.removePlayer(player)
+        }
     }
 }

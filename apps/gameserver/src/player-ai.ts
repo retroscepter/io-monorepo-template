@@ -10,7 +10,7 @@ export class PlayerAI extends Player {
         return this.gameserver.ai.opts
     }
 
-    update() {
+    update(now: number) {
         // Nothing here
     }
 }

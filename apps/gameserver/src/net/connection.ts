@@ -2,6 +2,7 @@ import { Reader } from 'binlingo'
 import { WebSocket } from 'ws'
 
 import { Player } from '../player'
+import { rand } from '../utils/math.utils'
 import { Listener } from './listener'
 import { Protocol } from './protocol/protocol'
 import { bufferToArrayBuffer } from './util/binary'
@@ -14,10 +15,27 @@ export class Connection {
     protocol: Protocol | null = null
     player: Player | null = null
 
+    heartbeatInterval = 0
+
+    #missedHeartbeats = 0
+    #lastHeartbeatCheckAt = 0
+
     constructor(readonly listener: Listener, readonly socket: WebSocket) {}
 
     start() {
+        this.#createHeartbeatInterval()
         this.#addListeners()
+    }
+
+    update(now: number) {
+        if (this.#missedHeartbeats > 2) {
+            this.close()
+        }
+
+        if (now - this.#lastHeartbeatCheckAt > this.heartbeatInterval) {
+            this.#missedHeartbeats++
+            this.#lastHeartbeatCheckAt = now
+        }
     }
 
     #addListeners() {
@@ -28,6 +46,13 @@ export class Connection {
     #removeListeners() {
         this.socket.removeAllListeners('message')
         this.socket.removeAllListeners('close')
+    }
+
+    #createHeartbeatInterval() {
+        this.heartbeatInterval = rand(
+            this.listener.opts.heartbeatIntervalMin,
+            this.listener.opts.heartbeatIntervalMax
+        )
     }
 
     #decideProtocol(reader: Reader) {
@@ -71,6 +96,15 @@ export class Connection {
 
     sendHello(player: Player) {
         this.protocol?.sendHello(player)
+    }
+
+    sendHeartbeatAck() {
+        this.protocol?.sendHeartbeatAck()
+    }
+
+    onHeartbeat() {
+        this.#missedHeartbeats = 0
+        this.sendHeartbeatAck()
     }
 
     #onMessage(data: any) {

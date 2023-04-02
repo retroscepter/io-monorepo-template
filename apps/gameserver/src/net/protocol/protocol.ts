@@ -13,7 +13,11 @@ export class Protocol {
     }
 
     sendHello(player: Player) {
-        throw new Error('Protocol#onHello should be implemented')
+        throw new Error('Protocol#sendHello should be implemented')
+    }
+
+    sendHeartbeatAck() {
+        throw new Error('Protocol#sendHeartbeatAck should be implemented')
     }
 
     onMessage(reader: Reader) {

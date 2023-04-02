@@ -10,7 +10,16 @@ export class Protocol1 extends Protocol {
         const writer = new DynWriter()
 
         writer.writeUint8(0)
+        writer.writeUint16(this.connection.heartbeatInterval)
         writer.writeUint32(player.id)
+
+        this.send(writer.finalize())
+    }
+
+    sendHeartbeatAck() {
+        const writer = new DynWriter()
+
+        writer.writeUint8(1)
 
         this.send(writer.finalize())
     }
@@ -21,5 +30,14 @@ export class Protocol1 extends Protocol {
         }
 
         const op = reader.readUint8()
+
+        switch (op) {
+            case 0:
+                return this.onHeartbeat()
+        }
+    }
+
+    onHeartbeat() {
+        this.connection.onHeartbeat()
     }
 }

@@ -21,6 +21,8 @@ export class Gameserver {
     }
 
     stop() {
+        this.ai.stop()
+        this.match.stop()
         this.listener.stop()
     }
 

@@ -1,7 +1,10 @@
 {
     "listener": {
         "port": 80,
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "updateInterval": 100,
+        "heartbeatIntervalMin": 1000,
+        "heartbeatIntervalMax": 3000
     },
     "ai": {
         "count": 0,

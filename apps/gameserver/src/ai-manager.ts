@@ -20,8 +20,10 @@ export class AIManager {
     }
 
     update() {
+        const now = Date.now()
+
         for (const [, player] of this.aiPlayers) {
-            player.update()
+            player.update(now)
         }
     }
 

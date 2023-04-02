@@ -13,6 +13,8 @@ export class Listener {
     readonly protocols = new Protocols()
     readonly connections = new Supermap<number, Connection>()
 
+    #updateTimer: NodeJS.Timer | null = null
+
     constructor(readonly gameserver: Gameserver, readonly opts: ListenerOpts) {}
 
     start() {
@@ -26,13 +28,23 @@ export class Listener {
             port: this.opts.port,
             host: this.opts.host
         })
+
         this.#addListeners()
+        this.#createUpdateTimer()
     }
 
     stop() {
         this.#closeAllConnections()
         this.#removeListeners()
         this.server = null
+    }
+
+    update() {
+        const now = Date.now()
+
+        for (const [, connection] of this.connections) {
+            connection.update(now)
+        }
     }
 
     #addListeners() {
@@ -44,6 +56,24 @@ export class Listener {
 
     #removeListeners() {
         this.server?.removeAllListeners('connection')
+    }
+
+    #createUpdateTimer() {
+        if (this.#updateTimer) {
+            this.#removeUpdateTimer()
+        }
+
+        this.#updateTimer = setInterval(
+            this.update.bind(this),
+            this.opts.updateInterval
+        )
+    }
+
+    #removeUpdateTimer() {
+        if (this.#updateTimer) {
+            clearInterval(this.#updateTimer)
+            this.#updateTimer = null
+        }
     }
 
     #createConnection(socket: WebSocket) {
